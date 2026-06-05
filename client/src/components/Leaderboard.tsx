@@ -52,7 +52,7 @@ export const Leaderboard = () => {
             <div key={item.name} className="rounded-lg border border-slate-200 p-3">
               <div className="font-semibold">{item.name}</div>
               <div className="text-sm text-slate-600">
-                Wins: {item.wins} · Losses: {item.losses} · Draws: {item.draws}
+                Wins: {item.wins} · Losses: {item.losses}
               </div>
             </div>
           ))

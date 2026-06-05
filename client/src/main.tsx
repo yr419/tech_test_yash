@@ -7,23 +7,16 @@ import { Leaderboard } from './components/Leaderboard'
 
 export const Main = () => {
   const {
-    playerX,
-    playerO,
-    setPlayerX,
-    setPlayerO,
     startGame,
     board,
-    turn,
     gameStatus,
-    winner,
-    boardSizeInput,
+    statusText,
     boardSize,
-    winLengthInput,
     isBoardEmpty,
     handleClick,
     reset,
-    handleBoardSizeInput,
-    handleWinLengthInput,
+    handleBoardSizeChange,
+    handleWinLengthChange,
   } = useGameState()
 
   return (
@@ -31,26 +24,15 @@ export const Main = () => {
       <div className="font-bold text-2xl">Tic Tac Toe</div>
       <div className="flex gap-1 items-start w-full max-w-7xl mx-auto justify-between">
         <div className="flex flex-col gap-6">
-          <PlayerInput
-            playerX={playerX}
-            playerO={playerO}
-            gameStarted={gameStatus !== 'waiting'}
-            onPlayerXChange={setPlayerX}
-            onPlayerOChange={setPlayerO}
-            onStartGame={startGame}
-          />
+          <PlayerInput gameStarted={gameStatus !== 'waiting'} onStartGame={startGame} />
 
           <ControlPanel
-            boardSizeInput={boardSizeInput}
-            winLengthInput={winLengthInput}
             boardSize={boardSize}
             isBoardEmpty={isBoardEmpty}
-            gameStatus={gameStatus}
-            turn={turn}
-            winner={winner}
+            statusText={statusText}
             gameStarted={gameStatus !== 'waiting'}
-            onBoardSizeChange={handleBoardSizeInput}
-            onWinLengthChange={handleWinLengthInput}
+            onBoardSizeChange={handleBoardSizeChange}
+            onWinLengthChange={handleWinLengthChange}
             onReset={reset}
           />
         </div>

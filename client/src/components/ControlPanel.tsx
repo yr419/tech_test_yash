@@ -1,40 +1,39 @@
-import React from 'react'
-import { Status, XorO } from '../types'
-
+import React, { useState } from 'react'
 interface ControlPanelProps {
-  boardSizeInput: string
-  winLengthInput: string
   boardSize: number
   isBoardEmpty: boolean
-  gameStatus: Status
-  turn: XorO
-  winner?: XorO | undefined
+  statusText: string
   gameStarted: boolean
-  onBoardSizeChange: (value: string) => void
-  onWinLengthChange: (value: string) => void
+  onBoardSizeChange: (value: number) => void
+  onWinLengthChange: (value: number) => void
   onReset: () => void
 }
 
 export const ControlPanel = ({
-  boardSizeInput,
-  winLengthInput,
   boardSize,
   isBoardEmpty,
-  gameStatus,
-  turn,
-  winner,
+  statusText,
   gameStarted,
   onBoardSizeChange,
   onWinLengthChange,
   onReset,
 }: ControlPanelProps) => {
-  const statusText =
-    gameStatus === 'won'
-      ? `Winner: ${winner}`
-      : gameStatus === 'draw'
-        ? "It's a draw!"
-        : `Current player: ${turn}`
+  const [boardSizeInput, setBoardSizeInput] = useState(String(boardSize))
+  const [winLengthInput, setWinLengthInput] = useState('3')
 
+  const handleBoardSizeChange = (value: string) => {
+    setBoardSizeInput(value)
+    const parsed = Number(value)
+    if (!Number.isInteger(parsed) || parsed < 3 || parsed > 15) return
+    onBoardSizeChange(parsed)
+  }
+
+  const handleWinLengthChange = (value: string) => {
+    setWinLengthInput(value)
+    const parsed = Number(value)
+    if (!Number.isInteger(parsed) || parsed < 3 || parsed > boardSize) return
+    onWinLengthChange(parsed)
+  }
   return (
     <div className="w-64 shrink-0 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-col gap-4">
@@ -51,8 +50,10 @@ export const ControlPanel = ({
             max={15}
             value={boardSizeInput}
             disabled={!gameStarted}
-            onChange={(e) => onBoardSizeChange(e.target.value)}
-            className="w-20 shrink-0 rounded border border-slate-300 bg-white px-2 py-1 text-center text-sm"
+            onChange={(e) => handleBoardSizeChange(e.target.value)}
+            className={`w-20 shrink-0 rounded border border-slate-300 bg-white px-2 py-1 text-center text-sm ${
+              !isBoardEmpty || !gameStarted ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           />
         </div>
 
@@ -72,10 +73,10 @@ export const ControlPanel = ({
             min={3}
             max={boardSize}
             value={winLengthInput}
-            onChange={(e) => onWinLengthChange(e.target.value)}
+            onChange={(e) => handleWinLengthChange(e.target.value)}
             disabled={!isBoardEmpty || !gameStarted}
             className={`w-20 shrink-0 rounded border border-slate-300 bg-white px-2 py-1 text-center text-sm ${
-              !isBoardEmpty ? 'opacity-50 cursor-not-allowed' : ''
+              !isBoardEmpty || !gameStarted ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           />
         </div>

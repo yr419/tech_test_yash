@@ -7,21 +7,28 @@ export const useGameState = () => {
   const [playerO, setPlayerO] = useState('')
 
   const [boardSize, setBoardSize] = useState<number>(3)
-  const [boardSizeInput, setBoardSizeInput] = useState<string>('3')
-
   const [winLength, setWinLength] = useState<number>(3)
-  const [winLengthInput, setWinLengthInput] = useState<string>('3')
 
   const [board, setBoard] = useState<(XorO | undefined)[][]>(createBoard(3))
   const [turn, setTurn] = useState<XorO>('X')
   const [gameStatus, setGameStatus] = useState<Status>('waiting')
   const [winner, setWinner] = useState<XorO | undefined>(undefined)
 
-  const startGame = () => {
-    if (!playerX.trim() || !playerO.trim()) {
-      return
-    }
+  const currentPlayerName = turn === 'X' ? playerX : playerO
+  const winnerName = winner ? (winner === 'X' ? playerX : playerO) : undefined
 
+  const statusText =
+    gameStatus === 'won'
+      ? `Winner: ${winnerName}`
+      : gameStatus === 'draw'
+        ? "It's a draw!"
+        : gameStatus === 'playing'
+          ? `Current player: ${currentPlayerName}`
+          : ''
+
+  const startGame = (nameX: string, nameO: string) => {
+    setPlayerX(nameX)
+    setPlayerO(nameO)
     setBoard(createBoard(boardSize))
     setTurn('X')
     setGameStatus('playing')
@@ -36,6 +43,7 @@ export const useGameState = () => {
     newBoard[row][column] = turn
     setBoard(newBoard)
     const nextTurn = turn === 'X' ? 'O' : 'X'
+
     const winningPlayer = checkWinner(newBoard, winLength)
     if (winningPlayer) {
       setGameStatus('won')
@@ -48,8 +56,6 @@ export const useGameState = () => {
   }
 
   const reset = () => {
-    setPlayerX('')
-    setPlayerO('')
     const nextStarter = winner ? (winner === 'X' ? 'O' : 'X') : turn === 'X' ? 'O' : 'X'
 
     setBoard(createBoard(boardSize))
@@ -58,24 +64,13 @@ export const useGameState = () => {
     setWinner(undefined)
   }
 
-  const handleWinLengthInput = (value: string) => {
-    if (!isBoardEmpty(board)) return
-    setWinLengthInput(value)
-
-    const parsed = Number(value)
-    if (!Number.isInteger(parsed) || parsed < 3 || parsed > boardSize) return
-
-    setWinLength(parsed)
+  const handleWinLengthChange = (value: number) => {
+    setWinLength(value)
   }
 
-  const handleBoardSizeInput = (value: string) => {
-    setBoardSizeInput(value)
-
-    const parsed = Number(value)
-    if (!Number.isInteger(parsed) || parsed < 3 || parsed > 15) return
-
-    setBoardSize(parsed)
-    setBoard(createBoard(parsed))
+  const handleBoardSizeChange = (value: number) => {
+    setBoardSize(value)
+    setBoard(createBoard(value))
     setTurn('X')
     setGameStatus('playing')
     setWinner(undefined)
@@ -88,7 +83,7 @@ export const useGameState = () => {
       const gameResult = {
         playerX,
         playerO,
-        winner: winnerName,
+        winner: winnerName ?? null,
         status: gameStatus,
         boardSize,
         winLength,
@@ -105,26 +100,18 @@ export const useGameState = () => {
         .then((data) => console.log('Game saved:', data))
         .catch((err) => console.error('Failed to save game:', err))
     }
-  }, [gameStatus, playerX, playerO, winner, boardSize, winLength])
+  }, [gameStatus])
 
   return {
-    playerX,
-    playerO,
-    setPlayerX,
-    setPlayerO,
     startGame,
     board,
-    turn,
     gameStatus,
-    winner,
+    statusText,
     boardSize,
-    boardSizeInput,
-    winLength,
-    winLengthInput,
     isBoardEmpty: isBoardEmpty(board),
     handleClick,
     reset,
-    handleBoardSizeInput,
-    handleWinLengthInput,
+    handleBoardSizeChange,
+    handleWinLengthChange,
   }
 }

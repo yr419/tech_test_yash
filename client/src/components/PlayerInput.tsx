@@ -1,22 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 interface PlayerInputProps {
-  playerX: string
-  playerO: string
   gameStarted: boolean
-  onPlayerXChange: (value: string) => void
-  onPlayerOChange: (value: string) => void
-  onStartGame: () => void
+  onStartGame: (playerX: string, playerO: string) => void
 }
 
-export const PlayerInput = ({
-  playerX,
-  playerO,
-  gameStarted,
-  onPlayerXChange,
-  onPlayerOChange,
-  onStartGame,
-}: PlayerInputProps) => {
+export const PlayerInput = ({ gameStarted, onStartGame }: PlayerInputProps) => {
+  const [playerX, setPlayerX] = useState('')
+  const [playerO, setPlayerO] = useState('')
+
   return (
     <div className="w-64 shrink-0 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="text-lg font-semibold">Player setup</div>
@@ -26,7 +18,7 @@ export const PlayerInput = ({
         <input
           type="text"
           value={playerX}
-          onChange={(e) => onPlayerXChange(e.target.value)}
+          onChange={(e) => setPlayerX(e.target.value)}
           placeholder="Enter name for X"
           disabled={gameStarted}
           className="rounded border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500"
@@ -38,7 +30,7 @@ export const PlayerInput = ({
         <input
           type="text"
           value={playerO}
-          onChange={(e) => onPlayerOChange(e.target.value)}
+          onChange={(e) => setPlayerO(e.target.value)}
           placeholder="Enter name for O"
           disabled={gameStarted}
           className="rounded border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500"
@@ -47,7 +39,7 @@ export const PlayerInput = ({
 
       <button
         type="button"
-        onClick={onStartGame}
+        onClick={() => onStartGame(playerX, playerO)}
         disabled={gameStarted}
         className={`rounded-lg px-4 py-3 text-sm font-semibold text-white transition ${
           gameStarted ? 'bg-slate-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
