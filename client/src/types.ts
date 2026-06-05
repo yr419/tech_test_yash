@@ -1,2 +1,2 @@
 export type XorO = 'X' | 'O'
-export type Status = 'playing' | 'draw' | 'won'
+export type Status = 'waiting' | 'playing' | 'draw' | 'won'
