@@ -98,11 +98,15 @@ export const useGameState = () => {
 
   useEffect(() => {
     if (!gameResultRef.current) return
+    if (gameStatus !== 'won' && gameStatus !== 'draw') return
+
+    const result = gameResultRef.current
+    gameResultRef.current = null
 
     fetch('http://localhost:3000/games', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(gameResultRef.current),
+      body: JSON.stringify(result),
     })
       .then((res) => res.json())
       .then((data) => console.log('Game saved:', data))
