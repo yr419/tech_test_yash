@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Status, XorO } from '../types'
 import { createBoard, checkWinner, isBoardEmpty } from '../utils/game'
 
@@ -76,30 +76,37 @@ export const useGameState = () => {
     setWinner(undefined)
   }
 
-  useEffect(() => {
-    if (gameStatus === 'won' || gameStatus === 'draw') {
-      const winnerName =
-        gameStatus === 'won' && winner ? (winner === 'X' ? playerX : playerO) : null
-      const gameResult = {
-        playerX,
-        playerO,
-        winner: winnerName ?? null,
-        status: gameStatus,
-        boardSize,
-        winLength,
-      }
+  const gameResultRef = useRef<{
+    playerX: string
+    playerO: string
+    winner: string | null
+    status: string
+    boardSize: number
+    winLength: number
+  } | null>(null)
 
-      fetch('http://localhost:3000/games', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(gameResult),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log('Game saved:', data))
-        .catch((err) => console.error('Failed to save game:', err))
+  if (gameStatus === 'won' || gameStatus === 'draw') {
+    gameResultRef.current = {
+      playerX,
+      playerO,
+      winner: gameStatus === 'won' && winner ? (winner === 'X' ? playerX : playerO) : null,
+      status: gameStatus,
+      boardSize,
+      winLength,
     }
+  }
+
+  useEffect(() => {
+    if (!gameResultRef.current) return
+
+    fetch('http://localhost:3000/games', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(gameResultRef.current),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log('Game saved:', data))
+      .catch((err) => console.error('Failed to save game:', err))
   }, [gameStatus])
 
   return {
