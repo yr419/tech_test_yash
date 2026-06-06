@@ -1,31 +1,41 @@
 
-# Tic-Tac-Toe
-The below problems are to allow us a glimpse into your problem solving ability, style and current skill set. Vibe coding is allowed but we are looking for good taste, brevity and clarity in your code. 
+# Tic-Tac-Toe 
+This repo contains solutions to problems 1 2 and 3 of the problem set 
 
-## Problems
-### Problem 1
-We have started a basic game of Tic-Tac-Toe as outlined [here](https://en.wikipedia.org/wiki/Tic-tac-toe) but we don't have anyone good enough to code to finish it! 
-- Please implement a complete basic game of Tic-Tac-Toe
-- Please use React and TypeScript throughout, if you know TailwindCSS please expand on what is already provided, otherwise it is fine to use raw styling 
-- Both players will play out of the same application, it is sufficient to just switch the current player each time a move is played
-- Once a game is completed, I should be able to start another game 
+### 1. Start the database
+With a docker daemon running, from the project root:
 
-### Problem 2
-We are bored with the basic game now, can you make it so the board can be scaled to any size? 
-- Add some kind of input which allows me to change the board size
-- The board size should be a number between 3 and 15 
+```bash
+docker compose up -d
+```
 
-### Problem 3
-We want to store game results in a database.
-- Create a simple backend server
-- Use any SQL database to store the results, please structure it in a relational manner and in a way for it to be expanded for future use cases 
-- Display simple stats back to the user including number of win and losses for each player
+### 2. Start the backend server
+Navigate to the server file and start the backend
 
-## Quickstart
-- Make sure you have **node** installed
-- `cd client`
-- `npm i`
-- `npm start`
+```bash
+cd server
+npm install
+npm run dev
+```
 
-## Submission
-Once you are done please submit the public repo to your recruiter or invite nick@spruce.eco to your private repo and let your recruiter know. 
+This should start the backend at localhost 3000
+
+### 3. Start the frontend
+In a separate terminal:
+
+```bash
+cd client
+npm install
+npm start
+```
+
+This should start the frontend at localhost 3001
+
+### Gameplay: 
+
+1. Enter names for player X and player O
+2. Click Start Game
+3. Play turns by clicking cells
+4. After the game ends, use Reset Game to start again
+5. Leaderboard stats are loaded from the backend
+
